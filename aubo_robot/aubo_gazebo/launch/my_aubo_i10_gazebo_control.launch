@@ -1,0 +1,31 @@
+<launch>
+  <!-- 1.startup Gazebo -->
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <!-- We resume the logic in empty_world.launch -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+<!-- 在启动gazebo_ros前先load_robot_description,好像运行一次就行，以后就不用了 -->
+  <include file="$(find aubo_i10_moveit_config)/launch/planning_context.launch" >
+    <arg name="load_robot_description" value="true" />
+  </include>
+  <!-- 2.Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	args="-urdf -model arm -param robot_description"/> 		
+    <group ns="/aubo_i10">  <!-- 将Gazebo关节控制器的配置参数加载到参数服务器中 -->
+          <rosparam file="$(find aubo_gazebo)/config/my_aubo_i10_gazebo_control.yaml" command="load"  />
+          <node name="aubo_i10_control_spawner" pkg="controller_manager" type="spawner" respawn="false"
+            output="screen"  ns='/aubo_i10'
+            args="joint_state_controller aubo_i10_controller gazebo_ros_control" />
+      </group>
+
+</launch>

@@ -1809,8 +1809,8 @@ class Auboi5Robot:
             logger.warn("RSHD uninitialized or not login!!!")
             return RobotErrorType.RobotError_NotLogin     
 
-        """
     def project_stop(self):
+        """
         * FUNCTION:    project_stop
         * DESCRIPTION: 通知机械臂工程停止，服务器停止检测安全IO
         * INPUTS:
@@ -2786,7 +2786,7 @@ def test_process_demo():
 
     # 创建机械臂控制类
     robot = Auboi5Robot()
-
+    # robot.set_work_mode(0)
     # 创建上下文
     handle = robot.create_context()
 
