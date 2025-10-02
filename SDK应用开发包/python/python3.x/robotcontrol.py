@@ -845,12 +845,12 @@ class Auboi5Robot:
             logger.warn("RSHD uninitialized or not login!!!")
             return None
 
-    def move_to_target_in_cartesian(self, pos, rpy_xyz):
+    def move_to_target_in_cartesian(self, pos, ori):
         """
         * FUNCTION:    move_to_target_in_cartesian
         * DESCRIPTION: 给出笛卡尔坐标值和欧拉角，机械臂轴动到目标位置和姿态
         * INPUTS:      pos:位置坐标（x，y，z），单位(m)
-        *              rpy：欧拉角（rx，ry，rz）,单位（度）
+        *              ori:四元数(w,x,y,z),单位: rad
         * OUTPUTS:
         * RETURNS:     成功返回: RobotError.RobotError_SUCC
         *              失败返回: 其他
@@ -859,10 +859,11 @@ class Auboi5Robot:
         self.check_event()
         if self.rshd >= 0 and self.connected:
             # 度 -> 弧度
-            rpy_xyz = [i / 180.0 * pi for i in rpy_xyz]
+            # rpy_xyz = [i / 180.0 * pi for i in rpy_xyz]
             # 欧拉角转四元数
-            ori = libpyauboi5.rpy_to_quaternion(self.rshd, rpy_xyz)
-
+            # ori = libpyauboi5.rpy_to_quaternion(self.rshd, rpy_xyz)
+            pos=tuple(pos)
+            ori=tuple(ori)
             # 逆运算得关节角
             joint_radian = libpyauboi5.get_current_waypoint(self.rshd)
 
@@ -1212,7 +1213,7 @@ class Auboi5Robot:
         * FUNCTION:    check_user_coord
         * DESCRIPTION: 检查用户坐标系参数设置是否合理
         * INPUTS:      user_coord:用户坐标系
-        *              user_coord = {'coord_type': 2,
+        *              user_coord = {'coord_type ': 2,
         *               'calibrate_method': 0,
         *               'calibrate_points':
         *                   {"point1": (0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
@@ -2458,8 +2459,8 @@ def step_test():
         logger.info("{0} test completed.".format(Auboi5Robot.get_local_time()))
 
 
-def excit_traj_track_test():
     # 初始化logger
+def excit_traj_track_test():
     logger_init()
 
     # 启动测试
@@ -2513,7 +2514,7 @@ def excit_traj_track_test():
             dynidentify_ret = robot.get_dynidentify_results()
             logger.info("dynidentify result={0}".format(dynidentify_ret))
             for i in range(0,54):
-	            dynidentify_ret[i] = dynidentify_ret[i]/1024.0
+                dynidentify_ret[i] = dynidentify_ret[i]/1024.0
             logger.info("dynidentify result={0}".format(dynidentify_ret))
 
             # 断开服务器链接
@@ -2554,7 +2555,7 @@ def move_rotate_test():
     try:
 
         # 链接服务器
-        ip = 'localhost'
+        ip = '192.168.1.100'
         port = 8899
         result = robot.connect(ip, port)
 
@@ -2600,7 +2601,7 @@ def move_rotate_test():
             logger.info("tool_pos_on_base={0}".format(tool_pos_on_base['pos'][0]))
 
             # 讲工具转轴向量平移到基座坐标系下(旋转方向符合右手准则)
-            rotate_axis = map(lambda a, b: a - b, tool_pos_on_base['pos'], current_pos['pos'])
+            rotate_axis =tuple(map(lambda a, b: a - b, tool_pos_on_base['pos'], current_pos['pos']))
 
             logger.info("rotate_axis={0}".format(rotate_axis))
 
@@ -2615,7 +2616,6 @@ def move_rotate_test():
                               {"pos": (0.0, 0.0, 0.0),
                                "ori": (1.0, 0.0, 0.0, 0.0)}
                           }
-
             # 调用转轴旋转接口，最后一个参数为旋转角度（弧度）
             robot.move_rotate(user_coord, rotate_axis, 1)
 
@@ -2872,7 +2872,7 @@ def test_process_demo():
         print("run end-------------------------")
 
 if __name__ == '__main__':
-    test_process_demo()
+    move_rotate_test()
     logger.info("test completed")
 
 

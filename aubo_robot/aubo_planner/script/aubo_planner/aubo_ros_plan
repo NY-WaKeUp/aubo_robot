@@ -54,7 +54,7 @@ class AuboRobotPlannerNode():
         self.plan_flag = 0
 
         # Instantiate a MoveGroupCommander object. This object is an interface to one group of joints.
-        self.group = moveit_commander.MoveGroupCommander("manipulator")
+        self.group = moveit_commander.MoveGroupCommander("manipulator_i10")
 
         moveit_commander.roscpp_initialize(sys.argv)
         # Instantiate a RobotCommander object.  This object is an interface to the robot as a whole.

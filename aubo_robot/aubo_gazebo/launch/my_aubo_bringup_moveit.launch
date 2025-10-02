@@ -1,0 +1,30 @@
+<launch>
+    <!-- launch gazebo  -->
+    <!-- 1.startup Gazebo -->
+    <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find aubo_description)/worlds/table_world.world"/>
+        <arg name="debug" value="$(arg debug)" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+        <arg name="headless" value="$(arg headless)"/>
+    </include>
+    <node   name="urdf_spawner" 
+            pkg="gazebo_ros" 
+            type="spawn_model" 
+            respawn="false" 
+            output="screen"
+	        args="-urdf -model arm -param robot_description"/> 
+    <!-- ros_control aubo_i10 launch file -->
+    <include file='$(find aubo_gazebo)/launch/my_aubo_gazebo_states.launch'/>
+    <!-- ris_control trajectory control dof aubo_i10 launch file -->
+    <include file='$(find aubo_gazebo)/launch/my_aubo_i10_gazebo_trajectory_controller.launch'/>
+    <!-- moveit launch file -->
+    <include file='$(find aubo_i10_moveit_config)/launch/moveit_planning_execution.launch'/>
+</launch>

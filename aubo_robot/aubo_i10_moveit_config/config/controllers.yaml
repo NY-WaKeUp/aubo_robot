@@ -1,3 +1,4 @@
+controller_manager_ns: controller_manager
 controller_list:
   - name: aubo_i10_controller
     action_ns: follow_joint_trajectory
@@ -10,4 +11,5 @@ controller_list:
       - wrist1_joint
       - wrist2_joint
       - wrist3_joint
-
+    allowed_execution_duration_scaling: 3.0  # 允许1.5倍的执行时间
+    allowed_goal_duration_margin: 2.0        # 额外增加0.5秒的余量

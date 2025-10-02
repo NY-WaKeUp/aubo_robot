@@ -1,0 +1,57 @@
+<launch>
+    <!-- =================================================================================== -->
+    <!-- |                      1. 启动Gazebo仿真环境                                      | -->
+    <!-- =================================================================================== -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="true"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <!-- =================================================================================== -->
+    <!-- |                      2. 加载模型和控制器配置                                    | -->
+    <!-- =================================================================================== -->
+    <!-- 将机器人模型加载到参数服务器 -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find aubo_gazebo)/urdf/aubo_i10.xacro'" />
+
+    <!-- 将ros_control的控制器配置加载到参数服务器 -->
+    <rosparam file="$(find aubo_gazebo)/config/my_gazebo_joints_states.yaml" command="load"/>
+    <rosparam file="$(find aubo_gazebo)/config/my_aubo_i10_gazebo_trajectory_control.yaml" command="load"/>
+
+    <!-- =================================================================================== -->
+    <!-- |                      3. 在Gazebo中生成并启动控制器                              | -->
+    <!-- =================================================================================== -->
+    <!-- 在Gazebo中生成机器人模型 -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+          args="-urdf -model aubo_i10 -param robot_description"/>
+
+    <!-- 启动robot_state_publisher -->
+    <!-- 它现在会自动监听默认的/joint_states话题 -->
+    <node name='robot_state_publisher' pkg='robot_state_publisher' type='robot_state_publisher'
+          respawn='false' output='screen'/>
+
+    <!-- 启动控制器 -->
+    <!-- 注意：这里不再需要ns="/aubo_i10"了，因为我们修改了URDF -->
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          output="screen" args="joint_state_controller aubo_i10_controller"/>
+
+    <!-- =================================================================================== -->
+    <!-- |                      4. 启动MoveIt!                                             | -->
+    <!-- =================================================================================== -->
+    <include file="$(find aubo_i10_moveit_config)/launch/move_group.launch">
+        <arg name="allow_trajectory_execution" value="true"/>
+        <!-- 关键！我们使用ros_control，而不是MoveIt的伪控制器 -->
+        <arg name="fake_execution" value="false"/>
+        <arg name="info" value="true"/>
+    </include>
+    
+    <!-- =================================================================================== -->
+    <!-- |                      5. 启动RViz进行可视化                                      | -->
+    <!-- =================================================================================== -->
+    <include file="$(find aubo_i10_moveit_config)/launch/moveit_rviz.launch">
+        <arg name="config" value="true"/>
+    </include>
+
+</launch>

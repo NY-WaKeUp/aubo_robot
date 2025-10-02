@@ -14,7 +14,7 @@
 import pyaubo_sdk
 import time
 
-robot_ip = "192.168.1.100"  # 服务器 IP 地址
+robot_ip = "192.168.1.101"  # 服务器 IP 地址
 robot_port = 30004  # 端口号
 M_PI = 3.14159265358979323846
 robot_rpc_client = pyaubo_sdk.RpcClient()

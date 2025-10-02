@@ -21,7 +21,7 @@
     <material name="Grey">
         <color rgba="0.96 0.96 0.96 1"/>
     </material>
-
+    <!-- 常量的定义方式 -->
     <xacro:property name="M_PI" value="3.14159"/>
 
 
@@ -450,8 +450,8 @@
 
 
   <!--////////////////////////////////// Transmissions for ROS Control //////////////////////////-->
-
-  <xacro:macro name="aubo_arm_transmission" params="joint_name">
+<!-- transmission 传动 -->
+  <xacro:macro name="aubo_arm_transmission" params="joint_name"> 
       <transmission name="${joint_name}_trans">
         <type>transmission_interface/SimpleTransmission</type>
         <joint name="${joint_name}">

@@ -7,7 +7,7 @@
 
   <!-- the "sim" argument controls whether we connect to a Simulated or Real robot -->
   <!--  - if sim=false, a robot_ip argument is required -->
-  <arg name="sim" default="true" />
+  <arg name="sim" default="false" />
   <arg name="robot_ip"/>
  
   <!-- load the robot_description parameter before launching ROS-I nodes -->
@@ -16,11 +16,11 @@
   </include>
 
  <!-- industrial_robot_simulator: accepts robot commands and reports status -->
-  <node pkg="aubo_controller" type="aubo_robot_simulator" name="aubo_robot_simulator"/>
+  <node pkg="aubo_controller" type="aubo_robot_simulator" name="aubo_robot_simulator" if="$(arg sim)"/>
   
   <!-- joint_trajectory_action: provides actionlib interface for high-level robot control -->
-  <node pkg="aubo_controller" type="aubo_joint_trajectory_action" name="aubo_joint_trajectory_action"/>
-
+  <node pkg="aubo_controller" type="aubo_joint_trajectory_action" name="aubo_joint_trajectory_action">
+  </node>
   <!-- run the "real robot" interface nodes -->
   <!--   - this typically includes: robot_state, motion_interface, and joint_trajectory_action nodes -->
   <!--   - replace these calls with appropriate robot-specific calls or launch files -->
@@ -31,12 +31,14 @@
   </group> -->
 
  <!-- publish the robot state (tf transforms) -->
-  <node name="aubo_driver" pkg="aubo_driver" type="aubo_driver" >
+  <node name="aubo_driver" pkg="aubo_driver" type="aubo_driver"  >
   <param name="/server_host" type="str" value="$(arg robot_ip)"/>
   <param name="/external_axis_number" value= "0.0"/>
+  
   <!--<param name="/server_host" value="127.0.0.1"/> -->
   </node>
-
+  <!-- 2. 启动我们新的适配器节点 -->
+  <node name="moveit_to_aubo_adapter" pkg="aubo_i10_moveit_config" type="moveit_to_aubo_adapter.py" output="screen"/>
   <!-- publish the robot state (tf transforms) -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 

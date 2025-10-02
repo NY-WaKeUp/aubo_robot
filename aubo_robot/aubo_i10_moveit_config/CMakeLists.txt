@@ -8,3 +8,8 @@ catkin_package()
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   PATTERN "setup_assistant.launch" EXCLUDE)
 install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+catkin_install_python(PROGRAMS
+  scripts/moveit_to_aubo_adapter.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

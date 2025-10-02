@@ -1,0 +1,11 @@
+<launch>
+  <rosparam  file="$(find aubo_gazebo)/config/my_aubo_i10_gazebo_trajectory_control.yaml" 
+             command="load"/>
+  <node name="aubo_i10_controller_spawner" 
+        pkg="controller_manager" 
+        type="spawner" 
+        respawn="false"
+        output="screen" 
+        ns="/aubo_i10" 
+        args="aubo_i10_controller"/>
+</launch>

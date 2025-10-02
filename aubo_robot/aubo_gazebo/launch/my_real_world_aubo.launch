@@ -1,0 +1,25 @@
+<launch>
+
+    <!-- 
+        这个 launch 文件用于启动并连接真实的 AUBO i10 机械臂。
+        它通过调用 MoveIt! 配置包中已有的 planning_execution 文件，
+        并传入正确的参数来实现。
+    -->
+
+    <include file="$(find aubo_i10_moveit_config)/launch/moveit_planning_execution.launch">
+        
+        <!-- 
+            这是最关键的一步:
+            将 sim 参数设置为 false，以激活真实硬件的连接逻辑。
+        -->
+        <arg name="sim" value="false" />
+        
+        <!-- 
+            在这里指定你真实机械臂的 IP 地址。
+            这个值会传递给 moveit_planning_execution.launch 文件内部的 robot_ip 参数。
+        -->
+        <arg name="robot_ip" value="192.168.1.100" /> <!-- <= 在这里修改成您自己的 IP -->
+
+    </include>
+
+</launch>

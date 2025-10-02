@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+
+    <!-- A global light source -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- A ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- ==================================================== -->
+    <!--          在这里定义我们的桌子模型                     -->
+    <!-- ==================================================== -->
+    <model name="table">
+      <static>true</static> <!-- 设置为 true，桌子不会因为碰撞或重力移动 -->
+      <pose>0.8 0 0 0 0 0</pose> <!-- 桌子中心的位置: x=0.8m, y=0, z=0, 旋转=0 -->
+
+      <!-- 桌子腿 1 -->
+      <link name="leg1">
+        <pose>-0.4 -0.3 0.35 0 0 0</pose>
+        <collision name="collision_leg1">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </collision>
+        <visual name="visual_leg1">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </visual>
+      </link>
+
+      <!-- 桌子腿 2 -->
+      <link name="leg2">
+        <pose>0.4 -0.3 0.35 0 0 0</pose>
+        <collision name="collision_leg2">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </collision>
+        <visual name="visual_leg2">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </visual>
+      </link>
+
+      <!-- 桌子腿 3 -->
+      <link name="leg3">
+        <pose>-0.4 0.3 0.35 0 0 0</pose>
+        <collision name="collision_leg3">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </collision>
+        <visual name="visual_leg3">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </visual>
+      </link>
+
+      <!-- 桌子腿 4 -->
+      <link name="leg4">
+        <pose>0.4 0.3 0.35 0 0 0</pose>
+        <collision name="collision_leg4">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </collision>
+        <visual name="visual_leg4">
+          <geometry><box><size>0.05 0.05 0.7</size></box></geometry>
+        </visual>
+      </link>
+
+      <!-- 桌面 -->
+      <link name="surface">
+        <pose>0 0 0.725 0 0 0</pose> <!-- 桌面的中心在 z=0.725m 高度 -->
+        <collision name="collision_surface">
+          <geometry><box><size>1.0 0.8 0.05</size></box></geometry> <!-- 桌面尺寸：长1m, 宽0.8m, 厚0.05m -->
+        </collision>
+        <visual name="visual_surface">
+          <geometry><box><size>1.0 0.8 0.05</size></box></geometry>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>
